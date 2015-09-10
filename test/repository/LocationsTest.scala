@@ -17,8 +17,9 @@ class LocationsTest {
   @Test
   def testLocationType():Unit ={
     val repo = LocationTypeRepository
-    val lt = LocationType("1","CITY","CT")
-    Await.result(repo.save(lt), 5000.millis)
+    val lt = LocationType("zone","ZAMBIA","CT")
+    val res = Await.result(repo.save(lt), 5000.millis)
+    println(" WHAT YOU GOT IN RETURN !!!!! ",res.wasApplied())
   }
   @Test
   def testLocationTypeUpdate():Unit ={
