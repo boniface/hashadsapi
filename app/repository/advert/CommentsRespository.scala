@@ -6,6 +6,7 @@ import com.websudos.phantom.column.PrimitiveColumn
 import com.websudos.phantom.dsl._
 import com.websudos.phantom.iteratee.Iteratee
 import conf.connection.DataConnection
+import domain.advert.Comments
 import domain.location.LocationType
 import repository.locations.LocationTypeRepository
 import repository.locations.LocationTypeRepository._
@@ -13,40 +14,41 @@ import repository.locations.LocationTypeRepository._
 /**
  * Created by hashcode on 2015/09/12.
  */
-class CommentsRespository extends CassandraTable[LocationTypeRepository, LocationType] {
-  object id extends StringColumn(this) with PartitionKey[String]
 
-  object name extends StringColumn(this)
+class CommentsRespository extends CassandraTable[CommentsRespository, Comments] {
+  object advertId extends StringColumn(this) with PartitionKey[String]
 
-  object code extends StringColumn(this)
+  object commentId extends StringColumn(this) with PrimaryKey[String]
 
-  override def fromRow(row: Row): LocationType = {
-    LocationType(
-      id(row),name(row),code(row)
+  object comment extends StringColumn(this)
+
+  override def fromRow(row: Row): Comments = {
+    Comments(
+      advertId(row),commentId(row),comment(row)
     )
   }
 }
 
-object LocationTypeRepository extends LocationTypeRepository with RootConnector{
-  override lazy val tableName = "ltypes"
+object CommentsRespository extends CommentsRespository with RootConnector{
+  override lazy val tableName = "comments"
   override implicit def space: KeySpace = DataConnection.keySpace
   override implicit def session: Session = DataConnection.session
 
-  def save(ltype:LocationType) ={
+  def save(comment:Comments) ={
     insert
-      .value(_.id,ltype.id)
-      .value(_.code,ltype.code)
-      .value(_.name,ltype.name)
+      .value(_.advertId,comment.advertId)
+      .value(_.commentId,comment.commentId)
+      .value(_.comment,comment.comment)
       .future()
   }
 
-  def findById(id:String)={
-    select.where(_.id eqs id).one()
+  def findById(advertId:String,commentId:String)={
+    select.where(_.advertId eqs advertId).and(_.commentId eqs commentId).one()
 
   }
 
-  def findAll()={
-    select.fetchEnumerator() run Iteratee.collect()
+  def findAll(advertId:String)={
+    select.where(_.advertId eqs advertId).fetchEnumerator() run Iteratee.collect()
   }
 
 }

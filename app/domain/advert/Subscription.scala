@@ -7,8 +7,8 @@ import java.util.Date
  */
 case class Subscription(advertId:String,
                          subId:String,
-                         subTypeid:String,
+                         subTypeId:String,
                          startDate:Date,
-                         endDAte:String) {
+                         endDate:Date) {
 
 }

@@ -6,6 +6,7 @@ import com.websudos.phantom.column.PrimitiveColumn
 import com.websudos.phantom.dsl._
 import com.websudos.phantom.iteratee.Iteratee
 import conf.connection.DataConnection
+import domain.advert.AdvertUploads
 import domain.location.LocationType
 import repository.locations.LocationTypeRepository
 import repository.locations.LocationTypeRepository._
@@ -13,40 +14,48 @@ import repository.locations.LocationTypeRepository._
 /**
  * Created by hashcode on 2015/09/12.
  */
-class AdvertUploadsRepository extends CassandraTable[LocationTypeRepository, LocationType] {
-  object id extends StringColumn(this) with PartitionKey[String]
 
-  object name extends StringColumn(this)
 
-  object code extends StringColumn(this)
+sealed class AdvertUploadsRepository extends CassandraTable[AdvertUploadsRepository, AdvertUploads] {
+  object advertId extends StringColumn(this) with PartitionKey[String]
 
-  override def fromRow(row: Row): LocationType = {
-    LocationType(
-      id(row),name(row),code(row)
+  object uploadId extends StringColumn(this) with PrimaryKey[String]
+
+  object uploadTypeId extends StringColumn(this)
+
+  object url extends StringColumn(this)
+
+  override def fromRow(row: Row): AdvertUploads = {
+    AdvertUploads(
+      advertId(row),
+      uploadId(row),
+      uploadTypeId(row),
+      url(row)
     )
   }
 }
 
-object LocationTypeRepository extends LocationTypeRepository with RootConnector{
-  override lazy val tableName = "ltypes"
+object AdvertUploadsRepository extends AdvertUploadsRepository with RootConnector{
+  override lazy val tableName = "auploads"
   override implicit def space: KeySpace = DataConnection.keySpace
   override implicit def session: Session = DataConnection.session
 
-  def save(ltype:LocationType) ={
+  def save(uploads:AdvertUploads) ={
     insert
-      .value(_.id,ltype.id)
-      .value(_.code,ltype.code)
-      .value(_.name,ltype.name)
+      .value(_.advertId,uploads.advertId)
+      .value(_.uploadId,uploads.uploadId)
+      .value(_.uploadTypeId,uploads.uploadTypeId)
+      .value(_.url,uploads.url)
       .future()
   }
 
-  def findById(id:String)={
-    select.where(_.id eqs id).one()
+  def findById(advertId:String, uploadId:String)={
+    select.where(_.advertId eqs advertId).and(_.uploadId eqs uploadId).one()
 
   }
 
-  def findAll()={
-    select.fetchEnumerator() run Iteratee.collect()
+  def findAllUploads(advertId:String)={
+    select.where(_.advertId eqs advertId).fetchEnumerator() run Iteratee.collect()
   }
 
 }

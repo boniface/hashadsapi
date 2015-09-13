@@ -6,6 +6,7 @@ import com.websudos.phantom.column.PrimitiveColumn
 import com.websudos.phantom.dsl._
 import com.websudos.phantom.iteratee.Iteratee
 import conf.connection.DataConnection
+import domain.advert.MetaList
 import domain.location.LocationType
 import repository.locations.LocationTypeRepository
 import repository.locations.LocationTypeRepository._
@@ -13,30 +14,27 @@ import repository.locations.LocationTypeRepository._
 /**
  * Created by hashcode on 2015/09/12.
  */
-class MetaListRepository extends CassandraTable[LocationTypeRepository, LocationType] {
+class MetaListRepository extends CassandraTable[MetaListRepository, MetaList] {
   object id extends StringColumn(this) with PartitionKey[String]
 
   object name extends StringColumn(this)
 
-  object code extends StringColumn(this)
-
-  override def fromRow(row: Row): LocationType = {
-    LocationType(
-      id(row),name(row),code(row)
+  override def fromRow(row: Row): MetaList = {
+    MetaList(
+      id(row),name(row)
     )
   }
 }
 
-object LocationTypeRepository extends LocationTypeRepository with RootConnector{
-  override lazy val tableName = "ltypes"
+object MetaListRepository extends MetaListRepository with RootConnector{
+  override lazy val tableName = "metalist"
   override implicit def space: KeySpace = DataConnection.keySpace
   override implicit def session: Session = DataConnection.session
 
-  def save(ltype:LocationType) ={
+  def save(mlist:MetaList) ={
     insert
-      .value(_.id,ltype.id)
-      .value(_.code,ltype.code)
-      .value(_.name,ltype.name)
+      .value(_.id,mlist.id)
+      .value(_.name,mlist.name)
       .future()
   }
 
