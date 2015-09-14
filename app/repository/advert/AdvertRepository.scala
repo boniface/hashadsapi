@@ -4,14 +4,10 @@ import java.util.Date
 
 import com.datastax.driver.core.Row
 import com.websudos.phantom.CassandraTable
-import com.websudos.phantom.column.PrimitiveColumn
 import com.websudos.phantom.dsl._
 import com.websudos.phantom.iteratee.Iteratee
 import conf.connection.DataConnection
 import domain.advert.Advert
-import domain.location.LocationType
-import repository.locations.LocationTypeRepository
-import repository.locations.LocationTypeRepository._
 
 /**
  * Created by hashcode on 2015/09/12.
