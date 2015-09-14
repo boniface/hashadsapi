@@ -23,7 +23,7 @@ class AdvertRepository extends CassandraTable[AdvertRepository, Advert] {
 
   object id extends StringColumn(this) with PrimaryKey[String]
 
-  object datePosted extends DateColumn(this) with PrimaryKey[Date] with ClusteringOrder[Date] with Descending
+  object datePosted extends DateColumn(this)
 
   object userId extends StringColumn(this)
 
