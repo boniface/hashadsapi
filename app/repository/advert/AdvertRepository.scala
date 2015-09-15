@@ -14,16 +14,15 @@ import views.html.helper.select
  * Created by hashcode on 2015/09/12.
  */
 
-
 class AdvertRepository extends CassandraTable[AdvertRepository, Advert] {
 
   object zone extends StringColumn(this) with PartitionKey[String]
 
-  object categoryId extends StringColumn(this) with PrimaryKey[String]
+  object categoryId extends StringColumn(this) with PrimaryKey[String] with ClusteringOrder[String] with Descending
 
-  object id extends StringColumn(this) with PrimaryKey[String]
+  object datePosted extends DateColumn(this)  with PrimaryKey[Date] with ClusteringOrder[Date] with Descending
 
-  object datePosted extends DateColumn(this)
+  object id extends StringColumn(this)
 
   object userId extends StringColumn(this)
 
@@ -74,28 +73,28 @@ object AdvertRepository extends AdvertRepository with RootConnector {
   }
 }
 
-//class SingleAdvertRepository extends CassandraTable[SingleAdvertRepository, Advert] {
-//
-//  object zone extends StringColumn(this) with PartitionKey[String]
-//
-//  object categoryId extends StringColumn(this) with PrimaryKey[String]
-//
-//  object id extends StringColumn(this) with PrimaryKey[String]
-//
-//  object datePosted extends DateColumn(this) with PrimaryKey[Date] with ClusteringOrder[Date] with Descending
-//
-//  object userId extends StringColumn(this)
-//
-//  object description extends StringColumn(this)
-//
-//  override def fromRow(row: Row): Advert = {
-//    Advert(
-//      zone(row), categoryId(row), id(row), datePosted(row), userId(row), description(row)
-//    )
-//  }
-//}
+class SingleAdvertRepository extends CassandraTable[SingleAdvertRepository, Advert] {
 
-object SingleAdvertRepository extends AdvertRepository with RootConnector {
+  object zone extends StringColumn(this)
+
+  object categoryId extends StringColumn(this)
+
+  object id extends StringColumn(this) with PartitionKey[String]
+
+  object datePosted extends DateColumn(this)
+
+  object userId extends StringColumn(this)
+
+  object description extends StringColumn(this)
+
+  override def fromRow(row: Row): Advert = {
+    Advert(
+      zone(row), categoryId(row), id(row), datePosted(row), userId(row), description(row)
+    )
+  }
+}
+
+object SingleAdvertRepository extends SingleAdvertRepository with RootConnector {
   override lazy val tableName = "sadverts"
 
   override implicit def space: KeySpace = DataConnection.keySpace

@@ -12,9 +12,8 @@ import scala.concurrent.duration._
 /**
  * Created by hashcode on 2015/09/10.
  */
-class CreateTableTest {
-  implicit val keyspace = DataConnection.keySpace
-  implicit val session = DataConnection.session
+class CreateTableTest extends TestApi{
+
 
   @Test
   def testCreateLocationType(): Unit = {
