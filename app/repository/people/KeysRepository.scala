@@ -38,7 +38,6 @@ object KeysRepository extends KeysRepository with RootConnector {
     select.where(_.id eqs id).one()
   }
   def getAllkeys: Future[Seq[Keys]] = {
-    println(" AM CALLING ALL KEYS CALLED ")
     select.fetchEnumerator() run Iteratee.collect()
 
   }

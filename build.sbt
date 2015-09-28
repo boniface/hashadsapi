@@ -18,8 +18,11 @@ libraryDependencies ++= Seq(
   "org.scalatest" % "scalatest_2.11"                 % "2.2.5"
 )
 
+libraryDependencies += "org.mongodb" % "casbah-gridfs_2.11" % "2.8.2"
+
 libraryDependencies += "junit" % "junit" % "4.12"
 
+libraryDependencies += "org.mongodb" % "casbah_2.11" % "2.8.2"
 
 resolvers ++= Seq(
   "Typesafe repository snapshots" at "http://repo.typesafe.com/typesafe/snapshots/",
