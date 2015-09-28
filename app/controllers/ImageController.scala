@@ -25,9 +25,5 @@ class ImageController extends Controller {
       )
       case None => NotFound
     }
-
-
-    //    Ok(views.html.index("Your new application is ready."))
-
   }
 }
